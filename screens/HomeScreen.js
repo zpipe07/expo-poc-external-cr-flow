@@ -1,53 +1,61 @@
 import React from 'react'
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { useFormik } from 'formik'
+import { StyleSheet, Text, View } from 'react-native'
+import { Headline, Subheading, Button } from 'react-native-paper'
+import * as yup from 'yup'
 
-// import Header from '../components/Header'
+import Screen from '../components/Screen'
+import TextInput from '../components/TextInput'
 
 const HomeScreen = ({ navigation }) => {
-  const handlePress = () => {
+  const onSubmit = () => {
     navigation.navigate('Request')
   }
 
+  const formik = useFormik({
+    initialValues: {
+      address: '',
+    },
+    validationSchema: yup.object().shape({
+      address: yup.string().required('Address is required.'),
+    }),
+    onSubmit,
+  })
+
   return (
-    <View style={styles.container}>
-      {/* <Header /> */}
+    <Screen style={styles.container}>
+      <Headline style={styles.heading}>Request a Visit</Headline>
 
-      <Text style={styles.heading}>Request a Visit</Text>
+      <Subheading style={styles.text}>
+        Let's confirm we can come to your address
+      </Subheading>
 
-      <Text style={styles.text}>Let's confirm we can come to your address</Text>
+      <TextInput label="Patient Address" name="address" formik={formik} />
 
-      <Text>Patient Address</Text>
-      <TextInput
-        onChange={() => {}}
-        value="615 Galapago St"
-        style={styles.input}
-      />
-
-      <Pressable onPress={handlePress} style={styles.button}>
-        <Text style={styles.buttonText}>Check for Service</Text>
-      </Pressable>
-    </View>
+      <Button
+        disabled={!formik.values.address}
+        mode="contained"
+        onPress={formik.handleSubmit}
+        style={styles.button}
+      >
+        Check for Service
+      </Button>
+    </Screen>
   )
 }
 
 export default HomeScreen
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    padding: 25,
-  },
   heading: {
-    fontSize: 22,
-    fontWeight: '600',
     textAlign: 'center',
-    marginBottom: 25,
+    marginBottom: 10,
   },
   text: {
     textAlign: 'center',
     marginBottom: 25,
   },
-  input: { borderColor: 'gray', borderWidth: 1, padding: 10, marginBottom: 25 },
-  button: { backgroundColor: 'green', padding: 25, borderRadius: 50 },
-  buttonText: { color: 'white' },
+  inputWrapper: {
+    marginBottom: 25,
+  },
 })
