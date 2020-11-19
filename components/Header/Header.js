@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 
 const Header = () => {
   return (
-    <View style={styles.header}>
+    <View>
       <Text style={styles.dispatch}>dispatch</Text>
       <Text style={styles.health}>HEALTH</Text>
     </View>
@@ -13,12 +13,6 @@ const Header = () => {
 export default Header
 
 const styles = StyleSheet.create({
-  header: {
-    // borderBottomColor: '#ebecec',
-    // borderBottomWidth: 1,
-    // marginBottom: 25,
-    // paddingBottom: 25,
-  },
   dispatch: {
     fontSize: 20,
     fontWeight: '800',

@@ -1,15 +1,44 @@
 import React from 'react'
-import { StyleSheet, Platform } from 'react-native'
+import { StyleSheet, Platform, View } from 'react-native'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { Headline, Button, Checkbox, HelperText } from 'react-native-paper'
+import { useMutation } from 'react-query'
 
 import Screen from '../components/Screen'
 import TextInput from '../components/TextInput'
+import api from '../api'
 
-const RequestScreen = () => {
-  const onSubmit = (values) => {
-    console.log({ values })
+const RequestScreen = ({ navigation }) => {
+  const onSuccess = () => {
+    console.log('success!')
+    navigation.navigate('Complete')
+  }
+
+  const mutateFunction = async (payload) => {
+    await api.createCareRequest(payload)
+  }
+
+  const onSubmit = async (values) => {
+    const payload = {
+      care_request: {
+        request_type: Platform.OS,
+        street_address_1: values.address,
+        street_address_2: '',
+        city: 'Denver',
+        state: 'CO',
+        zipcode: '80204',
+        chief_complaint: values.symptoms,
+        patient_attributes: {
+          first_name: values.firstName,
+          last_name: values.lastName,
+          mobile_number: values.cellPhone,
+          patient_email: values.email,
+        },
+      },
+    }
+
+    await mutate(payload)
   }
 
   const formik = useFormik({
@@ -34,6 +63,8 @@ const RequestScreen = () => {
     onSubmit,
   })
 
+  const [mutate, { isLoading }] = useMutation(mutateFunction, { onSuccess })
+
   const handleCheckboxPress = () => {
     formik.setFieldValue('acceptTerms', !formik.values.acceptTerms)
   }
@@ -54,20 +85,27 @@ const RequestScreen = () => {
 
       <TextInput label="Your Email Address" name="email" formik={formik} />
 
-      <Checkbox.Item
-        label="I agree to DispatchHealth's Privacy Policy & Terms of Service"
-        status={formik.values.acceptTerms ? 'checked' : 'unchecked'}
-        onPress={handleCheckboxPress}
-        style={styles.checkbox}
-      />
-      <HelperText
-        type="error"
-        visible={!!(formik.touched.acceptTerms && formik.errors.acceptTerms)}
-      >
-        {formik.errors.acceptTerms}
-      </HelperText>
+      <View style={styles.checkboxContainer}>
+        <Checkbox.Item
+          label="I agree to DispatchHealth's Privacy Policy & Terms of Service"
+          status={formik.values.acceptTerms ? 'checked' : 'unchecked'}
+          onPress={handleCheckboxPress}
+          style={styles.checkbox}
+        />
+        <HelperText
+          style={styles.error}
+          type="error"
+          visible={!!(formik.touched.acceptTerms && formik.errors.acceptTerms)}
+        >
+          {formik.errors.acceptTerms}
+        </HelperText>
+      </View>
 
-      <Button mode="contained" onPress={formik.handleSubmit}>
+      <Button
+        loading={isLoading}
+        mode="contained"
+        onPress={formik.handleSubmit}
+      >
         Submit
       </Button>
     </Screen>
@@ -81,8 +119,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
   },
+  checkboxContainer: {
+    paddingBottom: 25,
+  },
   checkbox: {
     flexDirection: 'row-reverse',
     justifyContent: Platform.OS === 'web' ? 'flex-end' : 'flex-start',
+  },
+  error: {
+    position: 'absolute',
+    bottom: 5,
   },
 })

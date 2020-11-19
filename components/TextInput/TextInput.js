@@ -10,7 +10,7 @@ const TextInput = ({ label, name, formik }) => {
   const hasError = !!(formik.touched[name] && formik.errors[name])
 
   return (
-    <View>
+    <View style={styles.container}>
       <PaperTextInput
         error={hasError}
         label={label}
@@ -19,7 +19,7 @@ const TextInput = ({ label, name, formik }) => {
         value={formik.values[name]}
       />
 
-      <HelperText type="error" visible={hasError}>
+      <HelperText type="error" visible={hasError} style={styles.error}>
         {formik.errors[name]}
       </HelperText>
     </View>
@@ -28,4 +28,12 @@ const TextInput = ({ label, name, formik }) => {
 
 export default TextInput
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 25,
+  },
+  error: {
+    position: 'absolute',
+    bottom: 5,
+  },
+})
