@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { ScrollView, SafeAreaView, StyleSheet, View } from 'react-native'
-import Constants from 'expo-constants'
 
 const Screen = ({ children }) => {
   return (

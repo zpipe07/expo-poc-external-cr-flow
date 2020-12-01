@@ -10,12 +10,28 @@ import CompleteScreen from './screens/CompleteScreen'
 
 const Stack = createStackNavigator()
 
-const theme = { ...DefaultTheme }
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#00053e',
+  },
+}
+
+const linking = {
+  config: {
+    screens: {
+      Home: '',
+      Request: '/request',
+      Complete: '/complete',
+    },
+  },
+}
 
 export default function App() {
   return (
     <PaperProvider theme={theme}>
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <Stack.Navigator
           initialRouteName="Home"
           screenOptions={{ headerTitle: (props) => <Header /> }}

@@ -16,7 +16,15 @@ const RequestScreen = ({ navigation }) => {
   }
 
   const mutateFunction = async (payload) => {
-    await api.createCareRequest(payload)
+    try {
+      const res = await api.createCareRequest(payload)
+
+      if (![200, 201].includes(res.status)) {
+        throw new Error('There was an error.')
+      }
+    } catch (error) {
+      throw error
+    }
   }
 
   const onSubmit = async (values) => {
